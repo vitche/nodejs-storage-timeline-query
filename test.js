@@ -2,37 +2,46 @@ const fs = require("fs");
 const { v4: uuid } = require('uuid');
 const storageTimeline = require("nodejs-storage-timeline");
 
-const storageName = './.storage';
-const schemaName = "schema";
-
 const randomInRange = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-// Open / create the storage
-if (!fs.existsSync(storageName)) {
-    fs.mkdirSync(storageName);
-}
-const storage = new storageTimeline.Storage(storageName);
+// TODO: Check-out the "random pyramid" term
+const randomPyramidalStorage = (storageName, min, max) => {
 
-// Open / create the schema
-storage.create(schemaName, () => {
-
-    const schema = storage.get(schemaName);
-
-    // Seed random time-lines
-    const timeLineCount = randomInRange(500, 1000);
-    for (let i = 0; i < timeLineCount; i++) {
-
-        const timeLineName = `time-line-${i}`;
-
-        // Open / create the time-line
-        schema.create(timeLineName, () => {
-
-            const timeLine = schema.get(timeLineName);
-            for (let k = 0; k < 111; k++) {
-                timeLine.add(uuid(), () => {});
-            }
-        });
+    // Open / create the storage
+    if (!fs.existsSync(storageName)) {
+        fs.mkdirSync(storageName);
     }
-});
+
+    const storage = new storageTimeline.Storage(storageName);
+
+    const schemaName = "schema";
+
+    // Open / create the schema
+    storage.create(schemaName, () => {
+
+        const schema = storage.get(schemaName);
+
+        // Seed random time-lines
+        const timeLineCount = randomInRange(min, max);
+        for (let k = 0; k < timeLineCount; k++) {
+
+            // Open / create the time-line
+            const timeLineName = `time-line-${k}`;
+            schema.create(timeLineName, () => {
+
+                const timeLine = schema.get(timeLineName);
+
+                // Seed random events
+                const eventCount = randomInRange(min, max);
+                for (let l = 0; l < eventCount; l++) {
+                    timeLine.add(uuid(), () => {});
+                }
+            });
+        }
+    });
+};
+
+const storageName = './.storage';
+randomPyramidalStorage(storageName, 111, 257);
