@@ -1,9 +1,13 @@
 const fs = require("fs");
+const { v4: uuid } = require('uuid');
 const storageTimeline = require("nodejs-storage-timeline");
 
 const storageName = './.storage';
 const schemaName = "schema";
-const timeLineName = "time-line";
+
+const randomInRange = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 // Open / create the storage
 if (!fs.existsSync(storageName)) {
@@ -16,12 +20,19 @@ storage.create(schemaName, () => {
 
     const schema = storage.get(schemaName);
 
-    // Open / create the time-line
-    schema.create(timeLineName, () => {
+    // Seed random time-lines
+    const timeLineCount = randomInRange(500, 1000);
+    for (let i = 0; i < timeLineCount; i++) {
 
-        const timeLine = schema.get(timeLineName);
-        for (let i = 0; i < 100000; i++) {
-            timeLine.add(`${i}:)`, () => {});
-        }
-    });
+        const timeLineName = `time-line-${i}`;
+
+        // Open / create the time-line
+        schema.create(timeLineName, () => {
+
+            const timeLine = schema.get(timeLineName);
+            for (let k = 0; k < 111; k++) {
+                timeLine.add(uuid(), () => {});
+            }
+        });
+    }
 });
