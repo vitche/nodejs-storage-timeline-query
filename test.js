@@ -16,32 +16,37 @@ const randomPyramidalStorage = (storageName, min, max) => {
 
     const storage = new storageTimeline.Storage(storageName);
 
-    const schemaName = "schema";
+    // Seed random schema
+    const schemaCount = randomInRange(min, max);
+    for (let i = 0; i < schemaCount; i++) {
 
-    // Open / create the schema
-    storage.create(schemaName, () => {
+        const schemaName = `schema-${i}`;
 
-        const schema = storage.get(schemaName);
+        // Open / create the schema
+        storage.create(schemaName, () => {
 
-        // Seed random time-lines
-        const timeLineCount = randomInRange(min, max);
-        for (let k = 0; k < timeLineCount; k++) {
+            const schema = storage.get(schemaName);
 
-            // Open / create the time-line
-            const timeLineName = `time-line-${k}`;
-            schema.create(timeLineName, () => {
+            // Seed random time-lines
+            const timeLineCount = randomInRange(min, max);
+            for (let k = 0; k < timeLineCount; k++) {
 
-                const timeLine = schema.get(timeLineName);
+                // Open / create the time-line
+                const timeLineName = `time-line-${k}`;
+                schema.create(timeLineName, () => {
 
-                // Seed random events
-                const eventCount = randomInRange(min, max);
-                for (let l = 0; l < eventCount; l++) {
-                    timeLine.add(uuid(), () => {});
-                }
-            });
-        }
-    });
+                    const timeLine = schema.get(timeLineName);
+
+                    // Seed random events
+                    const eventCount = randomInRange(min, max);
+                    for (let l = 0; l < eventCount; l++) {
+                        timeLine.add(uuid(), () => {});
+                    }
+                });
+            }
+        });
+    }
 };
 
 const storageName = './.storage';
-randomPyramidalStorage(storageName, 111, 257);
+randomPyramidalStorage(storageName, 17, 111);
