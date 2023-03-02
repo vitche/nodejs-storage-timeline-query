@@ -46,7 +46,9 @@ module.exports = {
                         self.Aggregation.count(timeLine, callback);
                     });
                 },
-                list: function (timeLine, callback) {
+                // This is a recursive method. So, the amount of items processed can be limited.
+                // TODO: Change to a recurrent implementation
+                unique: function (timeLine, callback) {
                     if (!timeLine.memoryCache) {
                         timeLine.memoryCache = require('memory-cache');
                         timeLine.memoryCache.clear();
@@ -66,7 +68,7 @@ module.exports = {
 
                             // Item was processed before.
                             // A recursion call to process the next item.
-                            self.Aggregation.list(timeLine, callback);
+                            self.Aggregation.unique(timeLine, callback);
                         } else {
 
                             timeLine.memoryCache.put(hash, true);
@@ -82,7 +84,7 @@ module.exports = {
                                     }
 
                                     // Рекурсивно обрабатываем следующий элемент
-                                    self.Aggregation.list(timeLine, callback);
+                                    self.Aggregation.unique(timeLine, callback);
                                 });
                             }
 
