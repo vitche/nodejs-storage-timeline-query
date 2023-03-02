@@ -1,5 +1,4 @@
-const aggregation = require("./aggregation");
-
 module.exports = {
-    Aggregation: aggregation.Query,
+    Aggregation: require("./aggregation"),
+    Generation: require("./generation")
 };

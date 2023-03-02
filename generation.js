@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { v4: uuid } = require('uuid');
+const {v4: uuid} = require('uuid');
 const storageTimeline = require("nodejs-storage-timeline");
 
 /**
@@ -52,7 +52,8 @@ const randomPyramidalStorage = (storageName, min, max) => {
                     // Seed random events
                     const eventCount = randomInRange(min, max);
                     for (let l = 0; l < eventCount; l++) {
-                        timeLine.add(uuid(), () => {});
+                        timeLine.add(uuid(), () => {
+                        });
                     }
                 });
             }
@@ -60,6 +61,9 @@ const randomPyramidalStorage = (storageName, min, max) => {
     }
 };
 
-module.exports = {
-    randomPyramidalStorage
+module.exports = function () {
+    const self = {
+        randomPyramidalStorage
+    };
+    return self;
 };

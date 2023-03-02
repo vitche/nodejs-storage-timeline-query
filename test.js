@@ -1,4 +1,4 @@
-const generators = require('./generators');
+const queryBuilder = require("./main");
 
-generators.randomPyramidalStorage('./.storages/storage-1', 17, 111);
-generators.randomPyramidalStorage('./.storages/storage-2', 17, 111);
+queryBuilder.Generation().randomPyramidalStorage('./.storages/storage-1', 17, 111);
+queryBuilder.Generation().randomPyramidalStorage('./.storages/storage-2', 17, 111);
