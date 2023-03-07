@@ -40,7 +40,7 @@ module.exports = function () {
                 }
 
                 // A recursion call to process the next item.
-                self.Aggregation.count(timeLine, callback);
+                self.count(timeLine, callback);
             });
         },
         // This is a recursive method. So, the amount of items processed can be limited.
@@ -65,7 +65,7 @@ module.exports = function () {
 
                     // Item was processed before.
                     // A recursion call to process the next item.
-                    self.Aggregation.unique(timeLine, callback);
+                    self.unique(timeLine, callback);
                 } else {
 
                     timeLine.memoryCache.put(hash, true);
@@ -81,7 +81,7 @@ module.exports = function () {
                             }
 
                             // Рекурсивно обрабатываем следующий элемент
-                            self.Aggregation.unique(timeLine, callback);
+                            self.unique(timeLine, callback);
                         });
                     }
 
