@@ -77,7 +77,7 @@ We welcome contributions to the project! Please feel free to submit issues or pu
 
 ## License
 
-This project is licensed under the ISC License. See the `LICENSE` file for details.
+This project is licensed under the LGPL License. See the `LICENSE` file for details.
 
 ## Authors
 
