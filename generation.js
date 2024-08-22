@@ -1,6 +1,6 @@
-const fs = require("fs");
-const {v4: uuid} = require('uuid');
-const storageTimeline = require("nodejs-storage-timeline");
+import fs from "fs";
+import uuid from "uuid";
+import storageTimeline from "nodejs-storage-timeline";
 
 /**
  * Generates a random number within the given range.
@@ -23,7 +23,7 @@ const randomInRange = (min, max) => {
  * Without additional context, it's difficult to determine precisely what is meant by the term "random pyramid."
  *
  */
-const randomPyramidalStorage = (storageName, min, max) => {
+export function randomPyramidalStorage(storageName, min, max) {
 
     // Open / create the storage
     if (!fs.existsSync(storageName)) {
@@ -63,11 +63,4 @@ const randomPyramidalStorage = (storageName, min, max) => {
             }
         });
     }
-};
-
-module.exports = function () {
-    const self = {
-        randomPyramidalStorage
-    };
-    return self;
-};
+}
