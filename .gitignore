@@ -2,3 +2,5 @@
 .storages/*
 node_modules
 .env
+.svn
+
