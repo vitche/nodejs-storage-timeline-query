@@ -1,45 +1,42 @@
 import objectHash from "object-hash";
-import memoryCache, {Cache} from 'memory-cache';
+import {Cache} from 'memory-cache';
 
-let lastTimeLine = undefined;
+export async function count(timeLine, hashFunction = objectHash) {
 
-export function count(timeLine, callback, hashFunction = objectHash) {
+    const memoryCache = new Cache();
 
-    if (!timeLine.memoryCache) {
-        timeLine.memoryCache = memoryCache;
-        timeLine.memoryCache.clear();
-        lastTimeLine = timeLine;
-        lastTimeLine._count = 0;
-        lastTimeLine._size = 0;
-    }
+    let count = 0;
+    let size = 0;
 
-    timeLine.next(function (error, item) {
+    while (true) {
 
-        if (error) {
-            callback(error);
-            return;
-        } else if (!item) {
-            callback(undefined, {
-                count: lastTimeLine._count,
-                size: lastTimeLine._size
+        const item = await new Promise((resolve, reject) => {
+            timeLine.next(function (error, value) {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(value);
+                }
             });
-            lastTimeLine = undefined;
-            return;
+        });
+
+        if (!item) {
+            return {
+                count,
+                size
+            }
         }
 
         const hash = hashFunction(item);
-        if (true === timeLine.memoryCache.get(hash)) {
+        if (true === memoryCache.get(hash)) {
 
             // Item was processed before.
-            lastTimeLine._count++;
-            lastTimeLine._size += JSON.stringify(item).length;
+            count++;
+            size += JSON.stringify(item).length;
         } else {
-            timeLine.memoryCache.put(hash, true);
+            memoryCache.put(hash, true);
         }
-
-        // A recursion call to process the next item.
-        count(timeLine, callback);
-    });
+    }
 }
 
 export async function unique(timeLine, hashFunction = objectHash) {
