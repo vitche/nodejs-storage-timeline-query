@@ -1,9 +1,9 @@
 import objectHash from "object-hash";
-import memoryCache from 'memory-cache';
+import memoryCache, {Cache} from 'memory-cache';
 
 let lastTimeLine = undefined;
 
-export function count(timeLine, callback) {
+export function count(timeLine, callback, hashFunction = objectHash) {
 
     if (!timeLine.memoryCache) {
         timeLine.memoryCache = memoryCache;
@@ -27,7 +27,7 @@ export function count(timeLine, callback) {
             return;
         }
 
-        const hash = objectHash(item);
+        const hash = hashFunction(item);
         if (true === timeLine.memoryCache.get(hash)) {
 
             // Item was processed before.
@@ -42,63 +42,79 @@ export function count(timeLine, callback) {
     });
 }
 
-// This is a recursive method. So, the amount of items processed can be limited.
-// TODO: Change to a recurrent implementation
-export function unique(timeLine, callback) {
-    if (!timeLine.memoryCache) {
-        timeLine.memoryCache = memoryCache;
-        timeLine.memoryCache.clear();
-    }
-    timeLine.next(function (error, item) {
+export async function unique(timeLine, hashFunction = objectHash) {
 
-        if (error) {
-            callback(error);
-            return;
-        } else if (!item) {
-            callback(undefined, timeLine.cleanCopy);
-            return;
-        }
+    const memoryCache = new Cache();
 
-        const hash = objectHash(item);
-        if (true === timeLine.memoryCache.get(hash)) {
+    let item;
+    while (true) {
 
-            // Item was processed before.
-            // A recursion call to process the next item.
-            unique(timeLine, callback);
+        item = await new Promise((resolve, reject) => {
+            timeLine.next(function (error, item) {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(item);
+                }
+            });
+        });
+
+        if (!item) {
+            return timeLine.cleanCopy;
         } else {
 
-            timeLine.memoryCache.put(hash, true);
+            // Calculate the desired event hash
+            const hash = hashFunction(item);
 
-            // Save this item
-            function _saveItem(timeLine, item) {
+            if (true === memoryCache.get(hash)) {
+
+                // Item was processed before.
+                // continue;
+            } else {
+
+                memoryCache.put(hash, true);
+
+                // Create a new time-line to hold the clean copy
+                if (!timeLine.cleanCopy) {
+
+                    // Тут мы специально копируем весь файл, чтобы одновременно убедиться, что есть свободное место.
+                    // Грязное и ленивое решение.
+                    let newTimeLine = await new Promise((resolve, reject) => {
+                        timeLine.copy(timeLine._name + '.tmp', async function (error, value) {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(value)
+                            }
+                        });
+                    });
+
+                    // And we delete the temporary file
+                    newTimeLine = await new Promise((resolve, reject) => {
+                        newTimeLine.truncate(function (error, value) {
+                            if (error) {
+                                reject(error);
+                            } else {
+                                resolve(value);
+                            }
+                        })
+                    });
+
+                    // Therefore, we get the new, empty, clean time-line
+                    timeLine.cleanCopy = newTimeLine;
+                }
 
                 // Сохраняем элемент в очищенную версию временного ряда
-                timeLine.cleanCopy.add(item.time, item.value, function (error) {
-                    if (error) {
-                        callback(error);
-                        return;
-                    }
-
-                    // Рекурсивно обрабатываем следующий элемент
-                    unique(timeLine, callback);
-                });
-            }
-
-            if (!timeLine.cleanCopy) {
-
-                // Тут мы специально копируем весь файл, чтобы одновременно убедиться, что есть свободное место.
-                // Грязное и ленивое решение.
-                timeLine.copy(timeLine._name + '.tmp', function (error, newTimeLine) {
-
-                    newTimeLine.truncate(function (error, newTimeLine) {
-
-                        timeLine.cleanCopy = newTimeLine;
-                        _saveItem(timeLine, item);
+                await new Promise((resolve, reject) => {
+                    timeLine.cleanCopy.add(item.time, item.value, async function (error) {
+                        if (error) {
+                            reject(error);
+                        } else {
+                            resolve();
+                        }
                     });
                 });
-            } else {
-                _saveItem(timeLine, item);
             }
         }
-    });
+    }
 }
