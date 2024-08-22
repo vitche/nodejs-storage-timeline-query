@@ -46,12 +46,10 @@ const storage = new Storage('./.storages/storage-1');
 const schema = storage.get('schema-0');
 const timeLine = schema.get('time-line-0');
 
-count(timeLine, (error, result) => {
-    if (error) {
-        console.error(error);
-    } else {
-        console.log(`Count: ${result.count}, Size: ${result.size}`);
-    }
+count(timeLine).then((result) => {
+    console.log(`Count: ${result.count}, Size: ${result.size}`);
+}).catch((error) => {
+    console.error(error);
 });
 ```
 
@@ -62,12 +60,10 @@ Remove duplicate events from a timeline:
 ```js
 import { unique } from "./aggregation.js";
 
-unique(timeLine, (error, result) => {
-    if (error) {
-        console.error(error);
-    } else {
-        console.log('De-duplicated Timeline:', result);
-    }
+unique(timeLine).then((result) => {
+    console.log('De-duplicated Timeline:', result);
+}).catch((error) => {
+    console.error(error);
 });
 ```
 
