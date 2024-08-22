@@ -1,6 +1,7 @@
+import objectHash from "object-hash";
 import {randomPyramidalStorage} from "./generation.js";
 import {Storage} from "nodejs-storage-timeline";
-import {count} from "./aggregation.js";
+import {countDuplicates} from "./aggregation.js";
 
 randomPyramidalStorage('./.storages/storage-1', 17, 23, ":)");
 randomPyramidalStorage('./.storages/storage-2', 17, 23, ":(");
@@ -10,7 +11,9 @@ const schema = storage.get('schema-0');
 const timeLine = schema.get('time-line-0');
 
 // Count events and total data size for the given time-line
-count(timeLine).then((analytics) => {
+countDuplicates(timeLine, (item) => {
+    return objectHash(item.value);
+}).then((analytics) => {
     console.log(analytics);
 });
 

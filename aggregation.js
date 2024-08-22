@@ -1,7 +1,7 @@
 import objectHash from "object-hash";
 import {Cache} from 'memory-cache';
 
-export async function count(timeLine, hashFunction = objectHash) {
+export async function countDuplicates(timeLine, hashFunction = objectHash) {
 
     const memoryCache = new Cache();
 
@@ -34,6 +34,44 @@ export async function count(timeLine, hashFunction = objectHash) {
             count++;
             size += JSON.stringify(item).length;
         } else {
+            memoryCache.put(hash, true);
+        }
+    }
+}
+
+export async function countUnique(timeLine, hashFunction = objectHash) {
+
+    const memoryCache = new Cache();
+
+    let count = 0;
+    let size = 0;
+
+    while (true) {
+
+        const item = await new Promise((resolve, reject) => {
+            timeLine.next(function (error, value) {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(value);
+                }
+            });
+        });
+
+        if (!item) {
+            return {
+                count, size
+            }
+        }
+
+        const hash = hashFunction(item);
+        if (true === memoryCache.get(hash)) {
+
+            // Item was processed before.
+        } else {
+            count++;
+            size += JSON.stringify(item).length;
+
             memoryCache.put(hash, true);
         }
     }

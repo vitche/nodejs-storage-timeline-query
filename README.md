@@ -39,14 +39,14 @@ randomPyramidalStorage('./.storages/storage-2', 17, 23, ":(");
 Count the number of events and the total data size in a timeline:
 
 ```js
-import { Storage } from "nodejs-storage-timeline";
-import { count } from "./aggregation.js";
+import {Storage} from "nodejs-storage-timeline";
+import {countUnique} from "./aggregation.js";
 
 const storage = new Storage('./.storages/storage-1');
 const schema = storage.get('schema-0');
 const timeLine = schema.get('time-line-0');
 
-count(timeLine).then((result) => {
+countUnique(timeLine).then((result) => {
     console.log(`Count: ${result.count}, Size: ${result.size}`);
 }).catch((error) => {
     console.error(error);

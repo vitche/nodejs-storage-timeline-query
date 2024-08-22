@@ -1,9 +1,10 @@
-import {count, unique} from "./aggregation";
+import {countDuplicates, countUnique, unique} from "./aggregation";
 
 const {randomPyramidalStorage} = require("./generation");
 
 export const Aggregation = {
-    count,
+    countUnique,
+    countDuplicates,
     unique
 };
 
