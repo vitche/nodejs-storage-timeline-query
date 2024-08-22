@@ -17,13 +17,14 @@ const randomInRange = (min, max) => {
  * @param storageName The file-system path to a storage.
  * @param min Random range start.
  * @param max Random range end.
+ * @param value The value to be stored.
  *
  * A random pyramid can refer to different things depending on the context. In mathematics, a random pyramid could be a geometric shape that has a polygonal base and triangular faces that meet at a single point (the apex). The term "random" might be used to suggest that the dimensions or angles of the pyramid are chosen randomly or according to some probabilistic distribution.
  * However, in other contexts, "random pyramid" might simply be a descriptive phrase that implies an irregular or haphazard arrangement of objects that roughly form a pyramid-like shape. For example, a pile of rocks or a stack of books arranged in a pyramid shape could be described as a "random pyramid" to emphasize the lack of deliberate design or organization.
  * Without additional context, it's difficult to determine precisely what is meant by the term "random pyramid."
  *
  */
-export function randomPyramidalStorage(storageName, min, max) {
+export function randomPyramidalStorage(storageName, min, max, value = uuid()) {
 
     // Open / create the storage
     if (!fs.existsSync(storageName)) {
@@ -56,7 +57,7 @@ export function randomPyramidalStorage(storageName, min, max) {
                     // Seed random events
                     const eventCount = randomInRange(min, max);
                     for (let l = 0; l < eventCount; l++) {
-                        timeLine.add(uuid(), () => {
+                        timeLine.add(value, () => {
                         });
                     }
                 });

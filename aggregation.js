@@ -1,11 +1,12 @@
-const objectHash = require('object-hash');
+import objectHash from "object-hash";
+import memoryCache from 'memory-cache';
 
 let lastTimeLine = undefined;
 
 export function count(timeLine, callback) {
 
     if (!timeLine.memoryCache) {
-        timeLine.memoryCache = require('memory-cache');
+        timeLine.memoryCache = memoryCache;
         timeLine.memoryCache.clear();
         lastTimeLine = timeLine;
         lastTimeLine._count = 0;
@@ -45,7 +46,7 @@ export function count(timeLine, callback) {
 // TODO: Change to a recurrent implementation
 export function unique(timeLine, callback) {
     if (!timeLine.memoryCache) {
-        timeLine.memoryCache = require('memory-cache');
+        timeLine.memoryCache = memoryCache;
         timeLine.memoryCache.clear();
     }
     timeLine.next(function (error, item) {
