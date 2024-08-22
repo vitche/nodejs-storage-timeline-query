@@ -1,3 +1,4 @@
 .idea
 .storages/*
 node_modules
+.env
