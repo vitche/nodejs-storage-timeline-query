@@ -1,5 +1,5 @@
 import objectHash from "object-hash";
-import {Cache} from 'memory-cache';
+import {Cache} from "memory-cache";
 
 export async function countDuplicates(timeLine, hashFunction = objectHash) {
 
@@ -24,7 +24,7 @@ export async function countDuplicates(timeLine, hashFunction = objectHash) {
             return {
                 count,
                 size
-            }
+            };
         }
 
         const hash = hashFunction(item);
@@ -59,9 +59,7 @@ export async function countUnique(timeLine, hashFunction = objectHash) {
         });
 
         if (!item) {
-            return {
-                count, size
-            }
+            return {count, size};
         }
 
         const hash = hashFunction(item);
@@ -119,7 +117,7 @@ export async function unique(timeLine, hashFunction = objectHash) {
                             if (error) {
                                 reject(error);
                             } else {
-                                resolve(value)
+                                resolve(value);
                             }
                         });
                     });
@@ -132,7 +130,7 @@ export async function unique(timeLine, hashFunction = objectHash) {
                             } else {
                                 resolve(value);
                             }
-                        })
+                        });
                     });
 
                     // Therefore, we get the new, empty, clean time-line
@@ -150,6 +148,56 @@ export async function unique(timeLine, hashFunction = objectHash) {
                     });
                 });
             }
+        }
+    }
+}
+
+export async function minimumTime(timeLine) {
+
+    let minTime = undefined;
+
+    while (true) {
+        const item = await new Promise((resolve, reject) => {
+            timeLine.next(function (error, value) {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(value);
+                }
+            });
+        });
+
+        if (!item) {
+            return minTime;
+        }
+
+        if (minTime === undefined || item.time < minTime) {
+            minTime = item.time;
+        }
+    }
+}
+
+export async function maximumTime(timeLine) {
+
+    let maxTime = undefined;
+
+    while (true) {
+        const item = await new Promise((resolve, reject) => {
+            timeLine.next(function (error, value) {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(value);
+                }
+            });
+        });
+
+        if (!item) {
+            return maxTime;
+        }
+
+        if (maxTime === undefined || item.time > maxTime) {
+            maxTime = item.time;
         }
     }
 }

@@ -1,7 +1,7 @@
 import objectHash from "object-hash";
 import {randomPyramidalStorage} from "./generation.js";
 import {Storage} from "nodejs-storage-timeline";
-import {countDuplicates} from "./aggregation.js";
+import {countDuplicates, maximumTime, minimumTime} from "./aggregation.js";
 
 randomPyramidalStorage('./.storages/storage-1', 17, 23, ":)");
 randomPyramidalStorage('./.storages/storage-2', 17, 23, ":(");
@@ -23,3 +23,15 @@ countDuplicates(timeLine, (item) => {
 // }).then((uniqueTimeLine) => {
 //     console.log(uniqueTimeLine);
 // });
+
+minimumTime(timeLine).then((minTime) => {
+    console.log(`Minimum time: ${minTime}`);
+}).catch((error) => {
+    console.error(error);
+});
+
+maximumTime(timeLine).then((maxTime) => {
+    console.log(`Maximum time: ${maxTime}`);
+}).catch((error) => {
+    console.error(error);
+});
