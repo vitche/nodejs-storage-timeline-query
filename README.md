@@ -6,6 +6,8 @@ This project provides a powerful query mechanism for the `Storage.Timeline` time
 
 This library enhances the functionality of `Storage.Timeline` by offering a set of tools to query, analyze, and manipulate the stored time series data effectively. Whether you need to count events, remove duplicates, or generate random pyramid-shaped data for testing, this library has got you covered.
 
+<img src="./storage_timeline_aggregation.png" alt="Storage.Timeline Aggregation" />
+
 ## Features
 
 - **Time Series Querying**: Efficiently query time series data stored in `Storage.Timeline` format.
