@@ -1,6 +1,6 @@
 {
   "name": "nodejs-storage-timeline-query",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "main": "main.js",
   "type": "module",
