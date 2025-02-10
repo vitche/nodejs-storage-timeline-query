@@ -1,6 +1,6 @@
 import {countDuplicates, countUnique, maximumTime, minimumTime, unique} from "./aggregation.js";
 
-const {randomPyramidalStorage} = require("./generation.js");
+import {randomPyramidalStorage} from "./generation.js";
 
 export const Aggregation = {
     countUnique,
